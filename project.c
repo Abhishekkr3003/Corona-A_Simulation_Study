@@ -6,7 +6,7 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
     {
         meeting[i] = 0;
         infection[i] = 0;
-        interaction[i] = 0;
+        isServiceMan[i] = 0;
         for (int j = 0; j < population; j++)
             town[i][j] = 0;
     }
@@ -16,18 +16,19 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
     int threshold, totalInfected = 0;
     //printf("1\n");
     threshold = serviceProvider * population;
-    set_service(threshold, spinteractions, population, normal_interactions);
+    set_service(threshold,population);
     //printf("2\n");
+    int interactions_people_do = normal_interactions * (population - threshold);
     if (indicator)
-        setup_town(spinteractions, population);
-    else
-        setup_town_2(spinteractions, population);
+        setup_town(spinteractions*threshold, population, interactions_people_do);
+    // else
+    //     setup_town_2(spinteractions, population, interactions_people_do);
     //printf("3\n");
 
     int total = 0;
     for (i = 0; i < population; i++)
     {
-        //printf("Interaction for %d is %d\n", i + 1, meeting[i]);
+        printf("Interaction for %d is %d\n", i + 1, meeting[i]);
         total += meeting[i];
         /*for(j=0;j<population;j++)
         {
@@ -38,14 +39,14 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
     }
     //printf("4\n");
     printf("Effective Interactions                                                                                         %d/%d\n", total, (int)(normal_interactions * (population - serviceProvider * population) + 2 * (int)(spinteraction * (population)) * serviceProvider * population));
-
+    printf("SPinteractons+interactions_people_do=%d\n", spinteractions+interactions_people_do);
     set_initial_infected(infected, population);
     //printf("5\n");
     totalInfected = set_infected(population, infected);
     //printf("6\n");
     printf("Total Infected:                                                                 %d\n\n", totalInfected);
     //printf("FIND:*************************************\n");
-    transClosure(population);
+    //transClosure(population);
     return totalInfected;
 }
 
@@ -210,11 +211,10 @@ int baisedYes(int x, int y)
     return 0;
 }
 
-void set_service(int threshold, int spinteraction, int population, int normal_interactions)
+void set_service(int threshold, int population)
 {
     //printf("Normal:%d", normal_interactions);
     int i = 0, count = 0, yesService = 0;
-    int service_meeting = spinteraction;
     //printf("Init\n");
     while (count < threshold)
     {
@@ -222,183 +222,206 @@ void set_service(int threshold, int spinteraction, int population, int normal_in
         yesService = randomYes();
         if (yesService == 1)
         {
-            if (interaction[i] != service_meeting)
+            if (isServiceMan[i] != 1)
             {
-                interaction[i] = spinteraction;
+                isServiceMan[i] = 1;
                 count++;
             }
         }
-        else if (interaction[i] != service_meeting)
-            interaction[i] = normal_interactions;
+        else if (isServiceMan[i] != 1)
+            isServiceMan[i] = 0;
         i = (i + 1) % population;
     }
     for (; i < population; i++)
     {
-        if (interaction[i] != service_meeting)
-            interaction[i] = normal_interactions;
+        if (isServiceMan[i] != 1)
+            isServiceMan[i] = 0;
     }
     //printf("going out\n");
 }
 
-void setup_town(int spinteraction, int population)
+void setup_town(int spinteraction, int population, int interactions_people_do)
 {
-    int i = 0, j = 0, yesMeeting = 0;
+    int i = 0, j = 0, yesMeeting = 0, countInteractions=0, count_service_interaction=0, people_done=0, sp_done=0;
 
-    for (i = 0; i < population; i++)
+    for (i = 0; countInteractions+count_service_interaction < interactions_people_do+spinteraction; i=(i == population - 1) ? 0 : i + 1)
     {
-        //if(interaction[i] == spinteraction)
-        //continue;
-        //printf("i=%d\n", i);
-        //printf("Service %d %d\n", i+1, interaction[i]);
-        j = i;
-
-        while (j < population && meeting[i] < interaction[i])
+        if (isServiceMan[i] == 0)
         {
-            if (interaction[j] == spinteraction) //A service provider won't meet any any other service provider
+            if (!people_done)
             {
-                //j = (j + 1) % population;
-                //j = (j == population - 1) ? i : j + 1;
-                if (i < 1500)
-                    j = (j == population - 1) ? i : j + 1;
-                else
-                    j = (j + 1) % population;
-                continue;
-            }
-            //printf("i=%d j=%d meet=%d\n", i, j, meeting[i]);
-            yesMeeting = baisedYes(i, j);
-            //printf("After Baised yes\n");
-            if (yesMeeting == 1)
-            {
-                town[i][j] = 1;
-                town[j][i] = 1;
-                meeting[i]++;
-                meeting[j]++;
-            }
-            /* else if (town[i][j] != 1)
-            {
-                town[i][j] = 0;
-                town[j][i] = 0;
-            } */
-            //j++;
-            //j = (j + 1) % population;
-            if (i < 1500)
-                j = (j == population - 1) ? i : j + 1;
-            else
-                j = (j + 1) % population;
-            //printf("i=%d  j= %d\n", i,j);
-        }
-    }
-}
+                j = i;
 
-void setup_town_2(int spinteraction, int population)
-{
-    int i = 0, j = 0, yesMeeting = 0;
-
-    for (i = 0; i < population; i++)
-    {
-        //printf("i=%d\n", i);
-        //printf("Service %d %d\n", i+1, interaction[i]);
-        j = i;
-        if (interaction[i] != spinteraction)
-        {
-            while (j < population && meeting[i] < interaction[i])
-            {
-                //printf("In while\n");
-                if (interaction[j] == spinteraction)
+                while (j < population)
                 {
-                    //j = (j + 1) % population;
-                    //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
-                        j = (j == population - 1) ? i : j + 1;
-                    else
-                        j = (j + 1) % population;
-                    continue;
+                    if (isServiceMan[j] == 1) //A service provider won't meet any any other service provider
+                    {
+                        j++;
+                        continue;
+                    }
+                    //printf("i=%d j=%d meet=%d\n", i, j, meeting[i]);
+                    yesMeeting = baisedYes(i, j);
+                    if (yesMeeting == 1)
+                    {
+                        town[i][j] = 1;
+                        town[j][i] = 1;
+                        meeting[i]++;
+                        meeting[j]++;
+                        countInteractions += 2;
+                        if (countInteractions >= interactions_people_do)
+                        {
+                            people_done = 1;
+                            break;
+                        }
+                    }
+                    j++;
                 }
-
-                //printf("i=%d j=%d meet=%d interaction=%d\n", i, j, meeting[i], interaction[i]);
-                yesMeeting = baisedYes(i, j);
-                //printf("After Baised yes\n");
-                if (yesMeeting == 1)
-                {
-
-                    town[i][j] = 1;
-                    town[j][i] = 1;
-                    meeting[i]++;
-                    meeting[j]++;
-                }
-                // else
-                // {
-                //     meeting[i]++;
-                //     meeting[j]++;
-                // }
-
-                // else if (town[i][j] != 1)
-                // {
-                //     //printf("NO\n");
-                //     town[i][j] = 0;
-                //     town[j][i] = 0;
-                // }
-                //j++;
-                //j = (j + 1) % population;
-                //j = (j == population - 1) ? i : j + 1;
-                //printf("i=%d  j= %d\n", i,j);
-                
-                if (i < 1500)
-                    j = (j == population - 1) ? i : j + 1;
-                else
-                    j = (j + 1) % population;
             }
-            
         }
-
         else
         {
-            //printf("here**************************************************************************************************\n");
-            while (j < population && meeting[i] < interaction[i])
+            if(!sp_done)
             {
-                if (interaction[j] == spinteraction)
+                j = i;
+
+                while (j < population)
                 {
-                    //j = (j + 1) % population;
-                    //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
-                        j = (j == population - 1) ? i : j + 1;
-                    else
-                        j = (j + 1) % population;
-                    continue;
+                    if (isServiceMan[j] == 1) //A service provider won't meet any any other service provider
+                    {
+                        j++;
+                        continue;
+                    }
+                    //printf("i=%d j=%d meet=%d\n", i, j, meeting[i]);
+                    yesMeeting = baisedYes(i, j);
+                    if (yesMeeting == 1 && town[i][j]!=1)
+                    {
+                        town[i][j] = 1;
+                        town[j][i] = 1;
+                        meeting[i]++;
+                        meeting[j]++;
+                        count_service_interaction += 2;
+                        if (count_service_interaction >= spinteraction)
+                        {
+                            sp_done = 1;
+                            break;
+                        }
+                    }
+                    j++;
                 }
-                if ((i % 2) != (j % 2))
-                {
-                    //j = (j + 1) % population;
-                    //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
-                        j = (j == population - 1) ? i : j + 1;
-                    else
-                        j = (j + 1) % population;
-                    continue;
-                }
-                yesMeeting = baisedYes(i, j);
-                //printf("After Baised yes\n");
-                if (yesMeeting == 1)
-                {
-                    town[i][j] = 1;
-                    town[j][i] = 1;
-                    meeting[i]++;
-                    meeting[j]++;
-                }
-                // else if (town[i][j] != 1)
-                // {
-                //     town[i][j] = 0;
-                //     town[j][i] = 0;
-                // }
-                //j++;
-                //j = (j + 1) % population;
-                //j = (j == population - 1) ? i : j + 1;
-                //printf("i=%d  j= %d\n", i,j);
-                if (i < 1500)
-                    j = (j == population - 1) ? i : j + 1;
-                else
-                    j = (j + 1) % population;
             }
         }
     }
 }
+
+// void setup_town_2(int spinteraction, int population)
+// {
+//     int i = 0, j = 0, yesMeeting = 0;
+
+//     for (i = 0; i < population; i++)
+//     {
+//         //printf("i=%d\n", i);
+//         //printf("Service %d %d\n", i+1, interaction[i]);
+//         j = i;
+//         if (isServiceMan[i] != spinteraction)
+//         {
+//             while (j < population && meeting[i] < isServiceMan[i])
+//             {
+//                 //printf("In while\n");
+//                 if (isServiceMan[j] == spinteraction)
+//                 {
+//                     //j = (j + 1) % population;
+//                     //j = (j == population - 1) ? i : j + 1;
+//                     if (i < 1500)
+//                         j = (j == population - 1) ? i : j + 1;
+//                     else
+//                         j = (j + 1) % population;
+//                     continue;
+//                 }
+
+//                 //printf("i=%d j=%d meet=%d interaction=%d\n", i, j, meeting[i], interaction[i]);
+//                 yesMeeting = baisedYes(i, j);
+//                 //printf("After Baised yes\n");
+//                 if (yesMeeting == 1)
+//                 {
+
+//                     town[i][j] = 1;
+//                     town[j][i] = 1;
+//                     meeting[i]++;
+//                     meeting[j]++;
+//                 }
+//                 // else
+//                 // {
+//                 //     meeting[i]++;
+//                 //     meeting[j]++;
+//                 // }
+
+//                 // else if (town[i][j] != 1)
+//                 // {
+//                 //     //printf("NO\n");
+//                 //     town[i][j] = 0;
+//                 //     town[j][i] = 0;
+//                 // }
+//                 //j++;
+//                 //j = (j + 1) % population;
+//                 //j = (j == population - 1) ? i : j + 1;
+//                 //printf("i=%d  j= %d\n", i,j);
+                
+//                 if (i < 1500)
+//                     j = (j == population - 1) ? i : j + 1;
+//                 else
+//                     j = (j + 1) % population;
+//             }
+            
+//         }
+
+//         else
+//         {
+//             //printf("here**************************************************************************************************\n");
+//             while (j < population && meeting[i] < isServiceMan[i])
+//             {
+//                 if (isServiceMan[j] == spinteraction)
+//                 {
+//                     //j = (j + 1) % population;
+//                     //j = (j == population - 1) ? i : j + 1;
+//                     if (i < 1500)
+//                         j = (j == population - 1) ? i : j + 1;
+//                     else
+//                         j = (j + 1) % population;
+//                     continue;
+//                 }
+//                 if ((i % 2) != (j % 2))
+//                 {
+//                     //j = (j + 1) % population;
+//                     //j = (j == population - 1) ? i : j + 1;
+//                     if (i < 1500)
+//                         j = (j == population - 1) ? i : j + 1;
+//                     else
+//                         j = (j + 1) % population;
+//                     continue;
+//                 }
+//                 yesMeeting = baisedYes(i, j);
+//                 //printf("After Baised yes\n");
+//                 if (yesMeeting == 1)
+//                 {
+//                     town[i][j] = 1;
+//                     town[j][i] = 1;
+//                     meeting[i]++;
+//                     meeting[j]++;
+//                 }
+//                 // else if (town[i][j] != 1)
+//                 // {
+//                 //     town[i][j] = 0;
+//                 //     town[j][i] = 0;
+//                 // }
+//                 //j++;
+//                 //j = (j + 1) % population;
+//                 //j = (j == population - 1) ? i : j + 1;
+//                 //printf("i=%d  j= %d\n", i,j);
+//                 if (i < 1500)
+//                     j = (j == population - 1) ? i : j + 1;
+//                 else
+//                     j = (j + 1) % population;
+//             }
+//         }
+//     }
+// }

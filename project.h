@@ -9,7 +9,7 @@
 
 int town[POPULATION][POPULATION];
 int meeting[POPULATION];
-int interaction[POPULATION];
+int isServiceMan[POPULATION];
 int initial_inf[INFECTED];
 int infection[POPULATION];
 
@@ -18,9 +18,9 @@ int randomYes();
 int gcd(int a, int b);
 int countPrimeFactors(int a, int b);
 int baisedYes(int x, int y);
-void set_service(int threshold, int spinteraction, int population, int normal_interactions);
-void setup_town(int spinteraction, int population);
-void setup_town_2(int spinteraction, int population);
+void set_service(int threshold, int population);
+void setup_town(int spinteraction, int population, int interactions_people_do);
+void setup_town_2(int spinteraction, int population, int interactions_people_do);
 int isprime(int n);
 void set_initial_infected(int, int);
 int set_infected(int, int);
