@@ -12,22 +12,22 @@ int main()
     int infected=5;
     double serviceProvider=0.03;
     double spinteraction=0.05;
-    int normal_interactions100=1;
+    int normal_interactions100=10;
     int normal_interactions50;
     int normal_interactions33;
 
-    doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 1);
+    doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 0);
 
-    for(int i=0;i<population;i++)
-    {
-        int row_count=0;
-        for(int j=0;j<population;j++)
-        {
-            if(town[i][j]==1)
-                row_count++;
-        }
-        printf("Row %d: %d\n", i+1, row_count);
-    }
+    // for(int i=0;i<population;i++)
+    // {
+    //     int row_count=0;
+    //     for(int j=0;j<population;j++)
+    //     {
+    //         if(town[i][j]==1)
+    //             row_count++;
+    //     }
+    //     printf("Row %d: %d\n", i+1, row_count);
+    // }
     printf("************************************************************************************************************************************ \n");
     t = clock() - t;
     double time_taken = ((double)t) / CLOCKS_PER_SEC;

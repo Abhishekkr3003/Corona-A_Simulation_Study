@@ -17,6 +17,7 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
     //printf("1\n");
     threshold = serviceProvider * population;
     set_service(threshold, spinteractions, population, normal_interactions);
+    set_initial_infected(infected, population);
     //printf("2\n");
     if (indicator)
         setup_town(spinteractions, population);
@@ -37,15 +38,15 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
         printf("\n\n"); */
     }
     //printf("4\n");
-    printf("Effective Interactions                                                                                         %d/%d\n", total, (int)(normal_interactions * (population - serviceProvider * population) + 2 * (int)(spinteraction * (population)) * serviceProvider * population));
+    //printf("Effective Interactions:                                                                                            %d/%d\n", total, (int)(normal_interactions * (population - serviceProvider * population) + 2 * (int)(spinteraction * (population)) * serviceProvider * population));
 
-    set_initial_infected(infected, population);
+    
     //printf("5\n");
     totalInfected = set_infected(population, infected);
     //printf("6\n");
-    printf("Total Infected:                                                                 %d\n\n", totalInfected);
+    //printf("Total Infected                                                                                                               %d\n\n", totalInfected);
     //printf("FIND:*************************************\n");
-    transClosure(population);
+    //transClosure(population);
     return totalInfected;
 }
 
@@ -60,19 +61,19 @@ void transClosure(int population)
 void set_initial_infected(int infected, int population)
 {
     int count = 0, index = 0, i = 0;
-    printf("Initially Infected: ");
+    //printf("Initially Infected: ");
     while (count < infected)
     {
         if (randomYes())
         {
             assert(index != infected);
-            initial_inf[index++] = i;
-            printf("C%d ", i);
+            infection[index++] = 1;
+            //printf("C%d ", i+1);
             count++;
         }
         i = (i + 1) % population;
     }
-    printf("\n");
+    //printf("\n");
 }
 
 void calculate_M_SD(int results[], float *mean, float *SD)
@@ -89,7 +90,7 @@ void calculate_M_SD(int results[], float *mean, float *SD)
     *SD = sqrt(var / 10);
 }
 
-void infection_rec(int index, int population)
+/* void infection_rec(int index, int population)
 {
 
     if (infection[index] == 1)
@@ -103,11 +104,11 @@ void infection_rec(int index, int population)
         }
     }
     return;
-}
+} */
 
 int set_infected(int population, int infected)
 {
-    for (int i = 0; i < population; i++)
+    /* for (int i = 0; i < population; i++)
         infection[i] = 0;
 
     for (int i = 0; i < infected; i++)
@@ -119,14 +120,14 @@ int set_infected(int population, int infected)
         if (infection[i] == 1)
             count++;
     }
+    return count; */
+    int count=0;
+    for(int i=0;i<population;i++)
+    {
+        if(infection[i]==1)
+            count++;
+    }
     return count;
-}
-
-int random_no()
-{
-
-    int random_no = rand();
-    return random_no % 2;
 }
 
 int randomYes()
@@ -155,7 +156,6 @@ int gcd(int a, int b)
 int isprime(int n)
 {
     int i, flag = 1;
-
     for (i = 2; i <= (sqrt(n)); i++)
     {
         if (n % i == 0)
@@ -171,7 +171,6 @@ int countPrimeFactors(int a, int b)
 {
     if (isprime(a) || isprime(b))
         return 1;
-
     int c;
     int factors[1000];
     c = gcd(a, b);
@@ -194,19 +193,13 @@ int countPrimeFactors(int a, int b)
 
 int baisedYes(int x, int y)
 {
-    //printf("ENtered biased yes\n");
     int common = countPrimeFactors(x + 1001, y + 1001);
-
     //Return biased interaction
     while (common--)
     {
         if (randomYes() == 1)
-        {
-            //printf("exit biased yes\n");
             return 1;
-        }
     }
-    //printf("exit biased yes\n");
     return 0;
 }
 
@@ -215,10 +208,9 @@ void set_service(int threshold, int spinteraction, int population, int normal_in
     //printf("Normal:%d", normal_interactions);
     int i = 0, count = 0, yesService = 0;
     int service_meeting = spinteraction;
-    //printf("Init\n");
+
     while (count < threshold)
     {
-        //printf("Here\n");
         yesService = randomYes();
         if (yesService == 1)
         {
@@ -237,7 +229,6 @@ void set_service(int threshold, int spinteraction, int population, int normal_in
         if (interaction[i] != service_meeting)
             interaction[i] = normal_interactions;
     }
-    //printf("going out\n");
 }
 
 void setup_town(int spinteraction, int population)
@@ -258,7 +249,7 @@ void setup_town(int spinteraction, int population)
             {
                 //j = (j + 1) % population;
                 //j = (j == population - 1) ? i : j + 1;
-                if (i < 1500)
+                if (i < (population-0.1*population))
                     j = (j == population - 1) ? i : j + 1;
                 else
                     j = (j + 1) % population;
@@ -269,6 +260,10 @@ void setup_town(int spinteraction, int population)
             //printf("After Baised yes\n");
             if (yesMeeting == 1)
             {
+                if(infection[i]==1 || infection[j]==1)
+                {
+                    infection[i]=infection[j]=1;
+                }
                 town[i][j] = 1;
                 town[j][i] = 1;
                 meeting[i]++;
@@ -281,7 +276,7 @@ void setup_town(int spinteraction, int population)
             } */
             //j++;
             //j = (j + 1) % population;
-            if (i < 1500)
+            if (i < (population-0.1*population))
                 j = (j == population - 1) ? i : j + 1;
             else
                 j = (j + 1) % population;
@@ -308,7 +303,7 @@ void setup_town_2(int spinteraction, int population)
                 {
                     //j = (j + 1) % population;
                     //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
+                    if (i < (population-0.1*population))
                         j = (j == population - 1) ? i : j + 1;
                     else
                         j = (j + 1) % population;
@@ -320,6 +315,10 @@ void setup_town_2(int spinteraction, int population)
                 //printf("After Baised yes\n");
                 if (yesMeeting == 1)
                 {
+                    if(infection[i]==1 || infection[j]==1)
+                    {
+                        infection[i] = infection[j] = 1;
+                    }
 
                     town[i][j] = 1;
                     town[j][i] = 1;
@@ -343,7 +342,7 @@ void setup_town_2(int spinteraction, int population)
                 //j = (j == population - 1) ? i : j + 1;
                 //printf("i=%d  j= %d\n", i,j);
                 
-                if (i < 1500)
+                if (i < (population-0.1*population))
                     j = (j == population - 1) ? i : j + 1;
                 else
                     j = (j + 1) % population;
@@ -353,14 +352,13 @@ void setup_town_2(int spinteraction, int population)
 
         else
         {
-            //printf("here**************************************************************************************************\n");
             while (j < population && meeting[i] < interaction[i])
             {
                 if (interaction[j] == spinteraction)
                 {
                     //j = (j + 1) % population;
                     //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
+                    if (i < (population-0.1*population))
                         j = (j == population - 1) ? i : j + 1;
                     else
                         j = (j + 1) % population;
@@ -370,7 +368,7 @@ void setup_town_2(int spinteraction, int population)
                 {
                     //j = (j + 1) % population;
                     //j = (j == population - 1) ? i : j + 1;
-                    if (i < 1500)
+                    if (i < (population-0.1*population))
                         j = (j == population - 1) ? i : j + 1;
                     else
                         j = (j + 1) % population;
@@ -380,6 +378,10 @@ void setup_town_2(int spinteraction, int population)
                 //printf("After Baised yes\n");
                 if (yesMeeting == 1)
                 {
+                    if (infection[i] == 1 || infection[j] == 1)
+                    {
+                        infection[i] = infection[j] = 1;
+                    }
                     town[i][j] = 1;
                     town[j][i] = 1;
                     meeting[i]++;
@@ -394,7 +396,7 @@ void setup_town_2(int spinteraction, int population)
                 //j = (j + 1) % population;
                 //j = (j == population - 1) ? i : j + 1;
                 //printf("i=%d  j= %d\n", i,j);
-                if (i < 1500)
+                if (i < (population-0.1*population))
                     j = (j == population - 1) ? i : j + 1;
                 else
                     j = (j + 1) % population;
