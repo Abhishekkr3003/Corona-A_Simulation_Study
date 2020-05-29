@@ -8,15 +8,15 @@ int main()
     srand(time(0));
     int repeats;
     int results[10];
-    int population=2000;
-    int infected=5;
+    int population=10000;
+    int infected=100;
     double serviceProvider=0.03;
     double spinteraction=0.05;
-    int normal_interactions100=10;
+    int normal_interactions100=6;
     int normal_interactions50;
     int normal_interactions33;
 
-    doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 0);
+    doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 1);
 
     // for(int i=0;i<population;i++)
     // {

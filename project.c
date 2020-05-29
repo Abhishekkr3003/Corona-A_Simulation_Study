@@ -44,7 +44,7 @@ int doExperiment(int population, double serviceProvider, double spinteraction, i
     //printf("5\n");
     totalInfected = set_infected(population, infected);
     //printf("6\n");
-    //printf("Total Infected                                                                                                               %d\n\n", totalInfected);
+    printf("Total Infected                                                                                                               %d\n\n", totalInfected);
     //printf("FIND:*************************************\n");
     //transClosure(population);
     return totalInfected;
