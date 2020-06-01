@@ -1,3 +1,7 @@
+/*
+	This file is for testing the project.c and project.h files
+*/
+
 #include "project.h"
 
 int main()
@@ -8,7 +12,7 @@ int main()
     srand(time(0));
     int repeats;
     int results[10];
-    int population=10000;
+    int population=2000;
     int infected=5;
     double serviceProvider=0.03;
     double spinteraction=0.05;
@@ -18,16 +22,6 @@ int main()
 
     doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 1);
 
-    // for(int i=0;i<population;i++)
-    // {
-    //     int row_count=0;
-    //     for(int j=0;j<population;j++)
-    //     {
-    //         if(town[i][j]==1)
-    //             row_count++;
-    //     }
-    //     printf("Row %d: %d\n", i+1, row_count);
-    // }
     printf("************************************************************************************************************************************ \n");
     t = clock() - t;
     double time_taken = ((double)t) / CLOCKS_PER_SEC;

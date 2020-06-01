@@ -1,3 +1,7 @@
+/*
+	This file contains the definition of the functions
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -23,7 +27,7 @@ void setup_town(int spinteraction, int population, int interactions_people_do);
 void setup_town_2(int spinteraction, int population, int interactions_people_do);
 int isprime(int n);
 void set_initial_infected(int, int);
-int set_infected(int, int);
+int count_infected(int, int);
 void infection_rec(int index, int population);
 int doExperiment(int, double, double, int, int normal_interactions, int indicator);
 void calculate_M_SD(int results[], float *mean, float *SD);

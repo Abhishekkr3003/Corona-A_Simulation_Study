@@ -16,7 +16,7 @@ int main()
     int normal_interactions50;
     int normal_interactions33;
     FILE *fp;
-    fp=fopen("Our Result.txt", "w");
+    fp=fopen("Our Result3.txt", "w");
 
     for (int x = 0; x < 4; x++)
     {
@@ -56,38 +56,38 @@ int main()
         float SD = 0.0;
 
         //Printing Format:
-        printf("_________________________________________________________________________________________________________________________________ \n");
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        printf("Table No. %d\n", x + 1);
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        printf("Description of ecperiment                                                                                                   Value\n");
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        printf("Population of the town (P)                                                                                             %10d\n", population);
-        printf("Count of major service providers (S)                                                                                   %10d\n", (int)(serviceProvider * population));
-        printf("Count of known infected persons (IR)                                                                                   %10d\n", infected);
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        printf("Result                                                                                      Count of person who need to be tested\n");
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"_________________________________________________________________________________________________________________________________ \n");
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"Table No. %d\n", x + 1);
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"Description of ecperiment                                                                                                   Value\n");
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"Population of the town (P)                                                                                             %10d\n", population);
-        fprintf(fp,"Count of major service providers (S)                                                                                   %10d\n", (int)(serviceProvider * population));
-        fprintf(fp,"Count of known infected persons (IR)                                                                                   %10d\n", infected);
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"Result                                                                                      Count of person who need to be tested\n");
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
+        printf(" ___________________________________________________________________________________________________________________________________ \n");
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        printf("| Table No. %d                                                                                                                       | \n", x + 1);
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        printf("| Description of experiment                                                                                                   Value |\n");
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        printf("| Population of the town (P)                                                                                             %10d |\n", population);
+        printf("| Count of major service providers (S)                                                                                   %10d |\n", (int)(serviceProvider * population));
+        printf("| Count of known infected persons (IR)                                                                                   %10d |\n", infected);
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------|\n");
+        printf("| Result                                                                                      Count of person who need to be tested |\n");
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------|\n");
+        fprintf(fp," ___________________________________________________________________________________________________________________________________ \n");
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        fprintf(fp,"| Table No. %d                                                                                                                       |\n", x + 1);
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        fprintf(fp,"| Description of experiment                                                                                                   Value |\n");
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        fprintf(fp,"| Population of the town (P)                                                                                             %10d |\n", population);
+        fprintf(fp,"| Count of major service providers (S)                                                                                   %10d |\n", (int)(serviceProvider * population));
+        fprintf(fp,"| Count of known infected persons (IR)                                                                                   %10d |\n", infected);
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        fprintf(fp,"| Result                                                                                      Count of person who need to be tested |\n");
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
         for (repeats = 0; repeats < 10; repeats++)
         {
             //printf("1\n");
             results[repeats] = doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions100, 1);
         }
         calculate_M_SD(results, &mean, &SD);
-        printf("Without any social distancing (T100)                                                       Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
-        fprintf(fp, "Without any social distancing (T100)                                                       Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
+        printf("| Without any social distancing (T100)                                                      Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
+        fprintf(fp, "| Without any social distancing (T100)                                                      Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
 
         normal_interactions50 = (int)normal_interactions100 / 2;
         for (repeats = 0; repeats < 10; repeats++)
@@ -96,8 +96,8 @@ int main()
             results[repeats] = doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions50, 1);
         }
         calculate_M_SD(results, &mean, &SD);
-        printf("With social distancing reducing contacts to 50%% (T50)                                      Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
-        fprintf(fp, "With social distancing reducing contacts to 50%% (T50)                                      Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
+        printf("| With social distancing reducing contacts to 50%% (T50)                                     Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
+        fprintf(fp, "| With social distancing reducing contacts to 50%% (T50)                                     Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
 
 
         normal_interactions33 = (int)normal_interactions100 / 3;
@@ -106,23 +106,23 @@ int main()
             results[repeats] = doExperiment(population, serviceProvider, spinteraction, infected, normal_interactions33, 1);
         }
         calculate_M_SD(results, &mean, &SD);
-        printf("With social distancing reducing contacts to 33%% (T33)                                     Mean:%7.001f & Standard Deviation: %0.001f\n", mean, SD);
-        fprintf(fp,"With social distancing reducing contacts to 33%% (T33)                                     Mean:%7.001f & Standard Deviation: %0.001f\n", mean, SD);
+        printf("| With social distancing reducing contacts to 33%% (T33)                                     Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
+        fprintf(fp,"| With social distancing reducing contacts to 33%% (T33)                                     Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
 
         for (repeats = 0; repeats < 10; repeats++)
         {
             results[repeats] = doExperiment(population, serviceProvider, (spinteraction), infected, (int)(normal_interactions100 / 2), 0);
         } 
         calculate_M_SD(results, &mean, &SD);
-        printf("With social distancing reducing contacts to 50%% with assigned service provider (TC)        Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
-        fprintf(fp,"With social distancing reducing contacts to 50%% with assigned service provider (TC)        Mean: %0.001f & Standard Deviation: %0.001f\n", mean, SD);
+        printf("| With social distancing reducing contacts to 50%% with assigned service provider (TC)       Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
+        fprintf(fp,"| With social distancing reducing contacts to 50%% with assigned service provider (TC)       Mean: %5d | Standard Deviation: %5.2f |\n", (int)mean, SD);
 
-        printf("--------------------------------------------------------------------------------------------------------------------------------- \n");
-        printf("_________________________________________________________________________________________________________________________________ \n");
+        printf("|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        printf("|___________________________________________________________________________________________________________________________________| \n");
         printf("\n\n");
 
-        fprintf(fp,"--------------------------------------------------------------------------------------------------------------------------------- \n");
-        fprintf(fp,"_________________________________________________________________________________________________________________________________ \n");
+        fprintf(fp,"|-----------------------------------------------------------------------------------------------------------------------------------| \n");
+        fprintf(fp,"|___________________________________________________________________________________________________________________________________| \n");
         fprintf(fp,"\n\n");
     }
 
@@ -145,8 +145,8 @@ int main()
     } */
 
     
-    printf("************************************************************************************************************************************ \n");
-    fprintf(fp,"************************************************************************************************************************************ \n");
+    printf("************************************************************************************************************************************* \n");
+    fprintf(fp,"************************************************************************************************************************************* \n");
     t = clock() - t;
     double time_taken = ((double)t) / CLOCKS_PER_SEC;
     printf("TIME TAKEN: %f seconds. \n", time_taken);
